@@ -7,13 +7,13 @@ import {
   readUserDev,
   updateUserDev,
 } from "./logic";
-import { ensureEmailExists } from "./middleware";
+import { ensureEmailExists, ensureUserExists } from "./middleware";
 
 const app: Application = express();
 app.use(json());
 app.post("/developers", ensureEmailExists, createUserDev);
 app.post("/developers/:id/infos", createUserDevInfo);
-app.get("/developers/:id", readUserDev);
+app.get("/developers/:id",ensureUserExists ,readUserDev);
 app.patch("/developers/:id", updateUserDev);
 app.delete("/developers/:id", deleteUserDev);
 

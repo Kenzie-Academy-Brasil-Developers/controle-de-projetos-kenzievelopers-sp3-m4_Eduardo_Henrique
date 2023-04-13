@@ -28,3 +28,33 @@ export const ensureEmailExists = async (
 
   return next();
 };
+
+export const ensureUserExists = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+): Promise<Response | void> => {
+  const id: number = parseInt(request.params.id);
+  const queryString = `
+        SELECT 
+            * 
+        FROM 
+            developers
+        WHERE 
+            id = $1;
+        `;
+  const queryConfig: QueryConfig = {
+    text: queryString,
+    values: [id],
+  };
+  const queryResult: QueryResult<IDeveloper> = await client.query(queryConfig);
+  console.log(queryResult.rows.length)
+  if (queryResult.rows.length == 0) {
+  
+    return response.status(404).json({
+      message: "Developer not found.",
+    });
+  }
+  return next();
+
+};
