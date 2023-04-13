@@ -89,7 +89,30 @@ export const updateUserDev = async (
   request: Request,
   response: Response
 ): Promise<Response | void> => {
-  return response.status(201).json();
+  const id: number = parseInt(request.params.id);
+  const data: IDeveloperRequest = request.body;
+  const queryString = format(
+    `
+      UPDATE
+          developers
+      SET
+          (%I) = (%L)
+      WHERE
+          id = $1
+      RETURNING
+  `,
+    Object.keys(data),
+    Object.values(data)
+  );
+
+  const queryConfig: QueryConfig = {
+    text: queryString,
+    values: [id],
+  };
+
+  const queryResult: QueryResult<IDeveloper> = await client.query(queryConfig);
+
+  return response.status(201).json(queryResult.rows[0]);
 };
 
 export const deleteUserDev = async (
