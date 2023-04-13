@@ -48,13 +48,52 @@ export const ensureUserExists = async (
     values: [id],
   };
   const queryResult: QueryResult<IDeveloper> = await client.query(queryConfig);
-  console.log(queryResult.rows.length)
+  console.log(queryResult.rows.length);
   if (queryResult.rows.length == 0) {
-  
     return response.status(404).json({
       message: "Developer not found.",
     });
   }
   return next();
+};
+export const ensureInfoExists = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+): Promise<Response | void> => {
+  const id: string = request.params.id;
+  const queryString = `
+      SELECT 
+          * 
+      FROM 
+          developer_infos
+      WHERE 
+          id = $1;
+      `;
+  const queryConfig: QueryConfig = {
+    text: queryString,
+    values: [id],
+  };
+  const queryResult: QueryResult<IDeveloper> = await client.query(queryConfig);
+  if (queryResult.rows.length > 0) {
+    return response
+      .status(409)
+      .json({ error: "There's already a profile information for this user." });
+  }
 
+  return next();
+};
+
+export const validateOS = (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
+  const OS: string = request.body.preferredOS
+  console.log(OS)
+  if(OS !== "Windows" && OS !== "Linux" && OS !== "MacOS") {
+    console.log(OS)
+    return response.status(400).json({ error: "Invalid operating system" })
+  }
+  next()
 };
