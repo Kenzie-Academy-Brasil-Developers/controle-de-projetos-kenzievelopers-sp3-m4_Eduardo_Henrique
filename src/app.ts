@@ -2,17 +2,19 @@ import express, { Application, json } from "express";
 import "dotenv/config";
 import {
   createUserDev,
+  
   createUserDevInfo,
+  
   deleteUserDev,
   readUserDev,
   updateUserDev,
 } from "./logic";
-import { ensureEmailExists, ensureInfoExists, ensureUserExists, validateOS } from "./middleware";
+import { ensureEmailExists, ensureUserInfoExists, ensureUserExists, validateOS } from "./middleware";
 
 const app: Application = express();
 app.use(json());
 app.post("/developers",ensureEmailExists, createUserDev);
-app.post("/developers/:id/infos", ensureUserExists,ensureInfoExists,validateOS,createUserDevInfo);
+app.post("/developers/:id/infos", ensureUserExists,ensureUserInfoExists,validateOS,createUserDevInfo);
 app.get("/developers/:id",ensureUserExists ,readUserDev);
 app.patch("/developers/:id", updateUserDev);
 app.delete("/developers/:id", deleteUserDev);

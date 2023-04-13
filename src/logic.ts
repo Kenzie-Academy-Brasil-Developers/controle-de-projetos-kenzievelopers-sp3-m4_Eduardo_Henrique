@@ -29,7 +29,6 @@ export const createUserDev = async (
     Object.values(data)
   );
   const queryResult: QueryResult<IDeveloper> = await client.query(queryString);
-  console.log(queryResult.rows);
   return response.status(201).json(queryResult.rows[0]);
 };
 
@@ -55,8 +54,7 @@ export const createUserDevInfo = async (
     queryString
   );
 
-  console.log(queryResult.rows[0]);
-  return response.status(201).json(queryResult.rows);
+  return response.status(201).json(queryResult.rows[0]);
 };
 
 export const readUserDev = async (
@@ -91,7 +89,6 @@ export const updateUserDev = async (
   request: Request,
   response: Response
 ): Promise<Response | void> => {
-  console.log("update");
   return response.status(201).json();
 };
 
@@ -99,6 +96,5 @@ export const deleteUserDev = async (
   request: Request,
   response: Response
 ): Promise<Response | void> => {
-  console.log("Delete");
   return response.status(204);
 };
