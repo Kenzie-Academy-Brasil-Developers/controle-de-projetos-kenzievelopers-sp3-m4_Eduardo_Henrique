@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, request } from "express";
-import { IDeveloper } from "./interfaces/interfaceDevelop";
+import { IDeveloper, IDeveloperInfo } from "./interfaces/interfaceDevelop";
 import { QueryConfig, QueryResult } from "pg";
 import { client } from "./database";
 
@@ -48,7 +48,6 @@ export const ensureUserExists = async (
     values: [id],
   };
   const queryResult: QueryResult<IDeveloper> = await client.query(queryConfig);
-  console.log(queryResult.rows.length);
   if (queryResult.rows.length == 0) {
     return response.status(404).json({
       message: "Developer not found.",
@@ -56,25 +55,27 @@ export const ensureUserExists = async (
   }
   return next();
 };
-export const ensureInfoExists = async (
+
+export const ensureUserInfoExists = async (
   request: Request,
   response: Response,
   next: NextFunction
 ): Promise<Response | void> => {
-  const id: string = request.params.id;
+  const id: number = parseInt(request.params.id);
   const queryString = `
       SELECT 
           * 
       FROM 
           developer_infos
       WHERE 
-          id = $1;
+          developer_infos."developerId" = $1;
       `;
   const queryConfig: QueryConfig = {
     text: queryString,
     values: [id],
   };
-  const queryResult: QueryResult<IDeveloper> = await client.query(queryConfig);
+  const queryResult: QueryResult<IDeveloperInfo> = await client.query(queryConfig);
+  console.log(queryResult.rows.length)
   if (queryResult.rows.length > 0) {
     return response
       .status(409)
@@ -89,11 +90,9 @@ export const validateOS = (
   response: Response,
   next: NextFunction
 ) => {
-  const OS: string = request.body.preferredOS
-  console.log(OS)
-  if(OS !== "Windows" && OS !== "Linux" && OS !== "MacOS") {
-    console.log(OS)
-    return response.status(400).json({ error: "Invalid operating system" })
+  const OS: string = request.body.preferredOS;
+  if (OS !== "Windows" && OS !== "Linux" && OS !== "MacOS") {
+    return response.status(400).json({ error: "Invalid operating system" });
   }
-  next()
+  next();
 };
