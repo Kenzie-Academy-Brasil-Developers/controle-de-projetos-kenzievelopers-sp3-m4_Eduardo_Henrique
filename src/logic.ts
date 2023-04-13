@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import {
   IDeveloper,
+  IDeveloperAllInfos,
   IDeveloperInfo,
   IDeveloperInfoRequest,
   IDeveloperRequest,
@@ -37,11 +38,11 @@ export const createUserDevInfo = async (
   response: Response
 ): Promise<Response | void> => {
   const data: IDeveloperInfoRequest = request.body;
-  data.developerId = parseInt(request.params.id)
+  data.developerId = parseInt(request.params.id);
   const queryString = format(
     `
     INSERT INTO
-    developer_infos(%I)
+          developer_infos(%I)
 
     VALUES
           (%L)
@@ -62,8 +63,28 @@ export const readUserDev = async (
   request: Request,
   response: Response
 ): Promise<Response | void> => {
-  console.log("buscar o usuario");
-  return response.status(200).json();
+  const id = request.params.id;
+  const queryString = `
+      SELECT 
+            dev.id "developerId",
+            dev.name "developerName",
+            dev.email "developerEmail",
+            dev_i."developerSince" "developerInfoDeveloperSince",
+            dev_i."preferredOS" "developerInfoPreferredOS"
+      FROM
+            developers dev
+      LEFT JOIN
+            developer_infos dev_i ON dev_i."developerId" = dev.id
+      WHERE 
+            dev.id = $1;`;
+  const queryConfig: QueryConfig = {
+    text: queryString,
+    values: [id],
+  };
+  const queryResult: QueryResult<IDeveloperAllInfos> = await client.query(
+    queryConfig
+  );
+  return response.status(200).json(queryResult.rows);
 };
 
 export const updateUserDev = async (
