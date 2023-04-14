@@ -5,11 +5,11 @@ export interface IProjects {
   estimatedTime: string;
   repository: string;
   startDate: Date;
-  endDate: Date | null;
+  endDate?: Date | null;
   developerId: number;
 }
 
-export type IProjectsResquest = Omit<IProjects,"id">
+export type IProjectsRequest = Omit<IProjects,"id">
 
 export interface IProjectsDescription{
   projectId: number;
