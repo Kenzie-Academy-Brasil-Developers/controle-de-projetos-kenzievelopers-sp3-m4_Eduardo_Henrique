@@ -5,10 +5,10 @@ import {
   IDeveloperInfo,
   IDeveloperInfoRequest,
   IDeveloperRequest,
-} from "./interfaces/interfaceDevelop";
+} from "../interfaces/interfaceDevelop";
 import format from "pg-format";
 import { QueryConfig, QueryResult } from "pg";
-import { client } from "./database";
+import { client } from "../database";
 
 export const createUserDev = async (
   request: Request,
@@ -99,7 +99,7 @@ export const updateUserDev = async (
           (%I) = (%L)
       WHERE
           id = $1
-      RETURNING
+      RETURNING *;
   `,
     Object.keys(data),
     Object.values(data)
@@ -119,5 +119,23 @@ export const deleteUserDev = async (
   request: Request,
   response: Response
 ): Promise<Response | void> => {
-  return response.status(204);
+  const id: number = Number(request.params.id);
+
+  console.log("ID:", id);
+
+  const queryString: string = `
+    DELETE FROM
+          developers
+    WHERE 
+          id = $1;
+  `;
+
+  const queryConfig: QueryConfig = {
+    text: queryString,
+    values: [id],
+  };
+
+  await client.query(queryConfig);
+
+  return response.status(204).send();
 };
