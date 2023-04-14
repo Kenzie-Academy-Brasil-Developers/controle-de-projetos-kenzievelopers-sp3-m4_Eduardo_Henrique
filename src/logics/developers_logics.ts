@@ -120,9 +120,6 @@ export const deleteUserDev = async (
   response: Response
 ): Promise<Response | void> => {
   const id: number = Number(request.params.id);
-
-  console.log("ID:", id);
-
   const queryString: string = `
     DELETE FROM
           developers
