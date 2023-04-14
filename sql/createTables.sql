@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS developer_infos (
     "developerSince" DATE NOT NULL,
     "preferredOS" "OS" NOT NULL,
     "developerId" INTEGER UNIQUE NOT NULL,
-    FOREIGN KEY("developerId") REFERENCES developers("id")
+    FOREIGN KEY("developerId") REFERENCES
+		developers("id") ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS projects (
@@ -22,7 +23,8 @@ CREATE TABLE IF NOT EXISTS projects (
 	"startDate" DATE NOT NULL,
 	"endDate" DATE,
 	"developerId" INTEGER NOT NULL,
-  FOREIGN KEY("developerId") REFERENCES developers("id")
+  FOREIGN KEY("developerId") REFERENCES
+	developers("id") ON DELETE CASCADE
 )
 
 CREATE TABLE IF NOT EXISTS technologies(
@@ -31,31 +33,16 @@ CREATE TABLE IF NOT EXISTS technologies(
 );
 
 INSERT INTO technologies (name)
-VALUES ('JavaScript');
-
-INSERT INTO technologies (name)
-VALUES ('Python');
-
-INSERT INTO technologies (name)
-VALUES ('React');
-
-INSERT INTO technologies (name)
-VALUES ('Express.js');
-
-INSERT INTO technologies (name) 
-VALUES ('HTML');
-
-INSERT INTO technologies (name)
-VALUES ('CSS');
-
-INSERT INTO technologies (name)
-VALUES ('Django');
-
-INSERT INTO technologies (name) 
-VALUES ('PostgreSQL');
-
-INSERT INTO technologies (name)
-VALUES ('MongoDB');
+VALUES 
+		('JavaScript'),
+		('Python'),
+		('React'),
+		('Express.js'),
+		('HTML'),
+		('CSS'),
+		('Django'),
+		('PostgreSQL'),
+		('MongoDB');
 
 CREATE TABLE IF NOT EXISTS projects_technologies(
 	"id" SERIAL PRIMARY KEY,
