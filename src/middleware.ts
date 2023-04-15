@@ -1,4 +1,11 @@
-import { NextFunction, Request, Response, query, request } from "express";
+import {
+  NextFunction,
+  Request,
+  Response,
+  query,
+  request,
+  response,
+} from "express";
 import { IDeveloper, IDeveloperInfo } from "./interfaces/interfaceDevelop";
 import { QueryConfig, QueryResult } from "pg";
 import { client } from "./database";
@@ -39,7 +46,7 @@ export const ensureUserExists = async (
   next: NextFunction
 ): Promise<Response | void> => {
   const id: number = parseInt(request.params.id);
- 
+
   const queryString = `
         SELECT 
             * 
@@ -55,8 +62,6 @@ export const ensureUserExists = async (
   };
 
   const queryResult: QueryResult<IDeveloper> = await client.query(queryConfig);
-  
-  
 
   if (queryResult.rows.length == 0) {
     return response.status(404).json({
@@ -148,7 +153,7 @@ export const ensureProjectExists = async (
   next: NextFunction
 ): Promise<Response | void> => {
   const id: number = parseInt(request.params.id);
- 
+
   const queryString = `
         SELECT 
             * 
@@ -164,7 +169,7 @@ export const ensureProjectExists = async (
   };
 
   const queryResult: QueryResult<IProjects> = await client.query(queryConfig);
-  
+
   if (queryResult.rows.length == 0) {
     return response.status(404).json({
       error: "Project not found.",
