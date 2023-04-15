@@ -41,8 +41,8 @@ app.delete("/developers/:id", ensureUserExists, deleteUserDev);
 app.post("/projects", ensureDeveloperIdProject, createProject);
 app.get("/projects/:id", ensureProjectExists, readProject);
 app.patch("/projects/:id", ensureDeveloperIdProject, ensureProjectExists, updateProject);
-app.delete("/projects/:id", );
+app.delete("/projects/:id", deleteProject);
 app.post("/projects/:id/technologies",  ensureProjectExists, addTechnologyToProject);
-app.delete("/projects/:id/technologies/:name", );
+app.delete("/projects/:id/technologies/:name", deleteTechnologiesProject);
 
 export default app;
