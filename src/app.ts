@@ -16,7 +16,7 @@ import {
   ensureProjectExists,
 } from "./middleware";
 
-import { createProject, updateProject } from "./logics/projects_logics";
+import { addTechnologyToProject, createProject, deleteProject, deleteTechnologiesProject, readProject, updateProject } from "./logics/projects_logics";
 
 const app: Application = express();
 app.use(json());
@@ -39,10 +39,10 @@ app.delete("/developers/:id", ensureUserExists, deleteUserDev);
 
 /*------------------ROTA /projects--------------------------*/
 app.post("/projects", ensureDeveloperIdProject, createProject);
-app.get("/projects/:id" ,/* callback */);
+app.get("/projects/:id", ensureProjectExists, readProject);
 app.patch("/projects/:id", ensureDeveloperIdProject, ensureProjectExists, updateProject);
-app.delete("/projects/:id" /* callback */);
-app.post("/projects/:id/technologies" /* callback */);
-app.post("/projects/:id/technologies/:name" /* callback */);
+app.delete("/projects/:id", );
+app.post("/projects/:id/technologies",  ensureProjectExists, addTechnologyToProject);
+app.delete("/projects/:id/technologies/:name", );
 
 export default app;
