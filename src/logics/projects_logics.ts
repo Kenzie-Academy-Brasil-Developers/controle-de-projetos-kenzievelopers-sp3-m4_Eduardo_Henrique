@@ -155,3 +155,55 @@ export const addTechnologyToProject = async (
     technologyName: name,
   });
 };
+export const deleteProject = async (
+  request: Request,
+  response: Response
+): Promise<Response> => {
+  const id = request.params.id;
+  const queryString = `
+  DELETE FROM
+          projects
+    WHERE 
+          id = $1;
+
+  `;
+  const queryConfig: QueryConfig = {
+    text: queryString,
+    values: [id],
+  };
+
+  await client.query(queryConfig);
+
+  return response.status(204).json();
+};
+
+export const deleteTechnologiesProject = async (
+  request: Request,
+  response: Response
+): Promise<Response> => {
+  const idProject: number = Number(request.params.id);
+  const nameTechnology = request.params.name;
+
+  const queryStringTechnology = `
+      SELECT 
+          *
+      FROM
+          technologies
+      WHERE
+          name = $1;
+    `;
+  const queryResultNameTechnology: QueryResult<ITechnology> = await client.query(
+    queryStringTechnology,
+    [nameTechnology]);
+  
+  const idTechnology = queryResultNameTechnology.rows[0].id;
+  
+  const queryStringProject_Tec = `
+      DELETE FROM
+          projects_technologies 
+      WHERE
+          "projectId" = $1 AND "technologyId" = $2;
+          `;
+  await client.query(queryStringProject_Tec,[idProject,idTechnology]);
+  return response.status(204).json();
+};
