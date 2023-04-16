@@ -189,7 +189,6 @@ export const ensureNameTecExists = async (
 ): Promise<Response | void> => {
   const nameTechnology: ITechnologyRequest = request.body.name;
   const idProject: number = Number(request.params.id);
-  const routePath = request.route.path;
 
   const queryStringNameTec: string = `
     SELECT
@@ -200,19 +199,10 @@ export const ensureNameTecExists = async (
         name = $1;
   `;
 
-  let queryConfig: QueryConfig = {
+  const queryConfig: QueryConfig = {
     text: queryStringNameTec,
     values: [nameTechnology],
   };
-
-  if (routePath === "/projects/:id/technologies/:name") {
-    const nameTechnologyParams: string = request.params.name;
-
-    queryConfig = {
-      text: queryStringNameTec,
-      values: [nameTechnologyParams],
-    };
-  }
 
   const queryResult: QueryResult<ITechnology> = await client.query(queryConfig);
 
@@ -309,9 +299,48 @@ export const ensureTecInProject = async (
 
   if (queryResultProjectTec.rows.length == 0) {
     return response.status(400).json({
-      message: "Technology not found",
+      message: "Technology not found in project",
     });
   }
 
+  return next();
+};
+
+export const ensureNameTecExistsParams = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+): Promise<Response | void> => {
+  const nameTec = request.params.name;
+
+  const queryString = `
+      SELECT
+          * 
+      FROM
+          technologies
+      WHERE
+          name = $1;
+`;
+  const queryConfig: QueryConfig = {
+    text: queryString,
+    values: [nameTec],
+  };
+  const queryResult: QueryResult<ITechnology> = await client.query(queryConfig);
+  if (queryResult.rowCount === 0) {
+    return response.status(404).json({
+      message: "Technology not supported.",
+      options: [
+        "JavaScript",
+        "Python",
+        "React",
+        "Express.js",
+        "HTML",
+        "CSS",
+        "Django",
+        "PostgreSQL",
+        "MongoDB",
+      ],
+    });
+  }
   return next();
 };
