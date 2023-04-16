@@ -67,7 +67,6 @@ export const ensureUserExists = async (
   };
 
   const queryResult: QueryResult<IDeveloper> = await client.query(queryConfig);
-  console.log(queryResult.rows)
   if (queryResult.rows.length == 0) {
     return response.status(404).json({
       message: "Developer not found.",
