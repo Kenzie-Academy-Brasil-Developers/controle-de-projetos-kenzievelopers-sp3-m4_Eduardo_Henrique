@@ -16,7 +16,7 @@ export const createUserDev = async (
 ): Promise<Response | void> => {
   const data: IDeveloperRequest = request.body;
 
-  const queryString = format(
+  const queryString: string = format(
     `
     INSERT INTO
           developers
@@ -37,7 +37,7 @@ export const createUserDevInfo = async (
   response: Response
 ): Promise<Response | void> => {
   const data: IDeveloperInfoRequest = request.body;
-  data.developerId = parseInt(request.params.id);
+  data.developerId = Number(request.params.id);
   const queryString = format(
     `
     INSERT INTO
@@ -61,8 +61,8 @@ export const readUserDev = async (
   request: Request,
   response: Response
 ): Promise<Response | void> => {
-  const id = request.params.id;
-  const queryString = `
+  const id: number = Number(request.params.id);
+  const queryString: string = `
       SELECT 
             dev.id "developerId",
             dev.name "developerName",
@@ -91,7 +91,7 @@ export const updateUserDev = async (
 ): Promise<Response | void> => {
   const id: number = parseInt(request.params.id);
   const data: IDeveloperRequest = request.body;
-  const queryString = format(
+  const queryString: string = format(
     `
       UPDATE
           developers

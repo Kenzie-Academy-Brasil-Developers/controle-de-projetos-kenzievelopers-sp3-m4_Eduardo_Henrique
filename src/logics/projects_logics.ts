@@ -6,6 +6,7 @@ import {
   IProjects,
   IProjectsDescription,
   IProjectsRequest,
+  ITechnoProject,
   ITechnology,
   ITechnologyRequest,
 } from "../interfaces/interfaceProject";
@@ -16,7 +17,7 @@ export const createProject = async (
 ): Promise<Response> => {
   const data: IProjectsRequest = request.body;
 
-  const queryString = format(
+  const queryString: string = format(
     `
       INSERT INTO
              projects
@@ -35,13 +36,14 @@ export const createProject = async (
   }
   return response.status(201).json(queryResult.rows[0]);
 };
+
 export const updateProject = async (
   request: Request,
   response: Response
 ): Promise<Response | void> => {
   const data: IProjectsRequest = request.body;
   const id: number = Number(request.params.id);
-  const queryString = format(
+  const queryString: string = format(
     `
     UPDATE
           projects
@@ -61,6 +63,7 @@ export const updateProject = async (
 
   return response.status(200).json(queryResult.rows[0]);
 };
+
 export const readProject = async (
   request: Request,
   response: Response
@@ -103,8 +106,8 @@ export const addTechnologyToProject = async (
   response: Response
 ): Promise<Response> => {
   const projectId = Number(request.params.id);
-  const name = request.body.name;
-  const queryStringSelectTec = `
+  const name: string = request.body.name;
+  const queryStringSelectTec: string = `
     SELECT 
           id 
     FROM 
@@ -112,32 +115,32 @@ export const addTechnologyToProject = async (
     WHERE 
           name = $1`;
 
-  const queryResultTechnology = await client.query(queryStringSelectTec, [
+  const queryResultTechnology:QueryResult<ITechnology> = await client.query(queryStringSelectTec, [
     name,
   ]);
 
   const technologyId: number = queryResultTechnology.rows[0].id;
 
-  const queryStringInsertTecPj = `
+  const queryStringInsertTecPj: string = `
     INSERT INTO
             projects_technologies
             ("addedIn", "projectId", "technologyId")
     VALUES
             (NOW(), $1, $2)`;
 
-  const queryResultInsertTecPj = await client.query(queryStringInsertTecPj, [
+  const queryResultInsertTecPj:QueryResult<ITechnoProject> = await client.query(queryStringInsertTecPj, [
     projectId,
     technologyId,
   ]);
 
-  const queryStringProjects = `
+  const queryStringProjects: string = `
     SELECT 
           * 
     FROM 
           projects 
     WHERE 
           id = $1`;
-  const queryResultsProject = await client.query(queryStringProjects, [
+  const queryResultsProject:QueryResult<IProjects> = await client.query(queryStringProjects, [
     projectId,
   ]);
 
@@ -155,12 +158,13 @@ export const addTechnologyToProject = async (
     technologyName: name,
   });
 };
+
 export const deleteProject = async (
   request: Request,
   response: Response
 ): Promise<Response> => {
-  const id = request.params.id;
-  const queryString = `
+  const id: number = Number(request.params.id);
+  const queryString: string = `
   DELETE FROM
           projects
     WHERE 
@@ -182,9 +186,9 @@ export const deleteTechnologiesProject = async (
   response: Response
 ): Promise<Response> => {
   const idProject: number = Number(request.params.id);
-  const nameTechnology = request.params.name;
+  const nameTechnology: string = request.params.name;
 
-  const queryStringTechnology = `
+  const queryStringTechnology: string = `
       SELECT 
           *
       FROM
@@ -192,18 +196,17 @@ export const deleteTechnologiesProject = async (
       WHERE
           name = $1;
     `;
-  const queryResultNameTechnology: QueryResult<ITechnology> = await client.query(
-    queryStringTechnology,
-    [nameTechnology]);
-  
-  const idTechnology = queryResultNameTechnology.rows[0].id;
-  
-  const queryStringProject_Tec = `
+  const queryResultNameTechnology: QueryResult<ITechnology> =
+    await client.query(queryStringTechnology, [nameTechnology]);
+
+  const idTechnology: number = queryResultNameTechnology.rows[0].id;
+
+  const queryStringProject_Tec: string = `
       DELETE FROM
           projects_technologies 
       WHERE
           "projectId" = $1 AND "technologyId" = $2;
           `;
-  await client.query(queryStringProject_Tec,[idProject,idTechnology]);
+  await client.query(queryStringProject_Tec, [idProject, idTechnology]);
   return response.status(204).json();
 };

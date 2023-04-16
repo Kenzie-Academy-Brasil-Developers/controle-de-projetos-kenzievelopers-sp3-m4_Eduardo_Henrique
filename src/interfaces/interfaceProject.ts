@@ -27,5 +27,10 @@ export interface ITechnology {
   id: number;
   name: string;
 }
-
+export interface ITechnoProject{
+  id:number,
+  addedIn:Date,
+  technologyId:number,
+  projectId:number,
+}
 export type ITechnologyRequest = Omit<ITechnology,"id">

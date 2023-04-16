@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS projects (
 	"repository" VARCHAR(120) NOT NULL,
 	"startDate" DATE NOT NULL,
 	"endDate" DATE,
-	"developerId" INTEGER NOT NULL,
+	"developerId" INTEGER,
   FOREIGN KEY("developerId") REFERENCES
 	developers("id") ON DELETE CASCADE
 )
