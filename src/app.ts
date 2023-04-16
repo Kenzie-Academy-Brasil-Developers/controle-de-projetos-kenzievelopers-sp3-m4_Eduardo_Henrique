@@ -14,6 +14,8 @@ import {
   validateOS,
   ensureDeveloperIdProject,
   ensureProjectExists,
+  ensureNameTecExists,
+  ensureTecInProject,
 } from "./middleware";
 
 import { addTechnologyToProject, createProject, deleteProject, deleteTechnologiesProject, readProject, updateProject } from "./logics/projects_logics";
@@ -37,12 +39,11 @@ app.patch(
 );
 app.delete("/developers/:id", ensureUserExists, deleteUserDev);
 
-/*------------------ROTA /projects--------------------------*/
 app.post("/projects", ensureDeveloperIdProject, createProject);
 app.get("/projects/:id", ensureProjectExists, readProject);
 app.patch("/projects/:id", ensureDeveloperIdProject, ensureProjectExists, updateProject);
-app.delete("/projects/:id", deleteProject);
-app.post("/projects/:id/technologies",  ensureProjectExists, addTechnologyToProject);
-app.delete("/projects/:id/technologies/:name", deleteTechnologiesProject);
+app.delete("/projects/:id", ensureProjectExists,deleteProject);
+app.post("/projects/:id/technologies", ensureProjectExists, ensureNameTecExists, addTechnologyToProject);
+app.delete("/projects/:id/technologies/:name", ensureProjectExists, ensureNameTecExists, ensureTecInProject,deleteTechnologiesProject);
 
 export default app;
