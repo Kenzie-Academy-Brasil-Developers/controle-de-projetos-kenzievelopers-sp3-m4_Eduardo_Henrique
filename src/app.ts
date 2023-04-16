@@ -16,6 +16,7 @@ import {
   ensureProjectExists,
   ensureNameTecExists,
   ensureTecInProject,
+  ensureNameTecExistsParams,
 } from "./middleware";
 
 import { addTechnologyToProject, createProject, deleteProject, deleteTechnologiesProject, readProject, updateProject } from "./logics/projects_logics";
@@ -44,6 +45,6 @@ app.get("/projects/:id", ensureProjectExists, readProject);
 app.patch("/projects/:id", ensureDeveloperIdProject, ensureProjectExists, updateProject);
 app.delete("/projects/:id", ensureProjectExists, deleteProject);
 app.post("/projects/:id/technologies", ensureProjectExists, ensureNameTecExists, addTechnologyToProject);
-app.delete("/projects/:id/technologies/:name", ensureProjectExists, ensureNameTecExists, ensureTecInProject,deleteTechnologiesProject);
+app.delete("/projects/:id/technologies/:name", ensureProjectExists, ensureNameTecExistsParams, ensureTecInProject,deleteTechnologiesProject);
 
 export default app;
