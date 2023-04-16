@@ -67,7 +67,6 @@ export const ensureUserExists = async (
   };
 
   const queryResult: QueryResult<IDeveloper> = await client.query(queryConfig);
-  console.log(queryResult.rows)
   if (queryResult.rows.length == 0) {
     return response.status(404).json({
       message: "Developer not found.",
@@ -207,7 +206,7 @@ export const ensureNameTecExists = async (
 
   const queryResult: QueryResult<ITechnology> = await client.query(queryConfig);
 
-  const queryStringProject: string = `
+  const queryStringTechnoProject: string = `
       SELECT 
           * 
       FROM 
@@ -216,10 +215,8 @@ export const ensureNameTecExists = async (
           "projectId" = $1;
   `;
 
-  const queryResultProject: QueryResult<ITechnoProject> = await client.query(
-    queryStringProject,
-    [idProject]
-  );
+  const queryResultTechnoProject: QueryResult<ITechnoProject> =
+    await client.query(queryStringTechnoProject, [idProject]);
 
   if (queryResult.rowCount === 0) {
     return response.status(404).json({
@@ -237,8 +234,23 @@ export const ensureNameTecExists = async (
       ],
     });
   }
+  const queryStringFoundTechnoName = `
+  SELECT 
+      * 
+  FROM 
+      projects_technologies 
+  WHERE 
+      "technologyId" =$1 ; 
+  `;
+  const queryConfigFoundTechnoName: QueryConfig = {
+    text: queryStringFoundTechnoName,
+    values: [queryResult.rows[0].id],
+  };
+  const queryResultFoundTechnoName = await client.query(
+    queryConfigFoundTechnoName
+  );
 
-  if (queryResultProject.rows.length !== 0) {
+  if (queryResultFoundTechnoName.rows.length !== 0) {
     return response.status(404).json({
       message: "The technology already exists",
     });
@@ -254,7 +266,7 @@ export const ensureTecInProject = async (
 ): Promise<Response | void> => {
   const idProject: number = Number(request.params.id);
   const nameTechnology: string = request.params.name;
-  
+
   const queryStringNameTec = `
       SELECT
           *
@@ -285,17 +297,50 @@ export const ensureTecInProject = async (
     [idProject]
   );
 
-    if (queryResultProjectTec.rows.length == 0) {
-      return response.status(400).json({
-        message: "Technology not found",
-      });
-    }
-    
-    if (queryResultProjectTec.rows[0].technologyId !== idTec) {
-      return response.status(400).json({
-        message: "Informed technology name is valid but not found in project",
-      });
-    }
+  if (queryResultProjectTec.rows.length == 0) {
+    return response.status(400).json({
+      message: "Technology not found in project",
+    });
+  }
 
-    return next();
+  return next();
+};
+
+export const ensureNameTecExistsParams = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+): Promise<Response | void> => {
+  const nameTec = request.params.name;
+
+  const queryString = `
+      SELECT
+          * 
+      FROM
+          technologies
+      WHERE
+          name = $1;
+`;
+  const queryConfig: QueryConfig = {
+    text: queryString,
+    values: [nameTec],
+  };
+  const queryResult: QueryResult<ITechnology> = await client.query(queryConfig);
+  if (queryResult.rowCount === 0) {
+    return response.status(404).json({
+      message: "Technology not supported.",
+      options: [
+        "JavaScript",
+        "Python",
+        "React",
+        "Express.js",
+        "HTML",
+        "CSS",
+        "Django",
+        "PostgreSQL",
+        "MongoDB",
+      ],
+    });
+  }
+  return next();
 };
