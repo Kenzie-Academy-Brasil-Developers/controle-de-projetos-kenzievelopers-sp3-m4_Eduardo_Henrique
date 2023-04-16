@@ -81,9 +81,9 @@ export const readUserDev = async (
         developers dev
     LEFT JOIN
         developer_infos dev_i ON dev_i."developerId" = dev.id
-  LEFT JOIN
+    LEFT JOIN
         projects pj ON pj."developerId" = dev."id"
-  WHERE 
+    WHERE 
         dev.id = $1;`;
   const queryConfig: QueryConfig = {
     text: queryString,
