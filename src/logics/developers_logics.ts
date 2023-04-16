@@ -63,18 +63,28 @@ export const readUserDev = async (
 ): Promise<Response | void> => {
   const id: number = Number(request.params.id);
   const queryString: string = `
-      SELECT 
-            dev.id "developerId",
-            dev.name "developerName",
-            dev.email "developerEmail",
-            dev_i."developerSince" "developerInfoDeveloperSince",
-            dev_i."preferredOS" "developerInfoPreferredOS"
-      FROM
-            developers dev
-      LEFT JOIN
-            developer_infos dev_i ON dev_i."developerId" = dev.id
-      WHERE 
-            dev.id = $1;`;
+    SELECT 
+        dev.id "developerId",
+        dev.name "developerName",
+        dev.email "developerEmail",
+        dev_i."developerSince" "developerInfoDeveloperSince",
+        dev_i."preferredOS" "developerInfoPreferredOS",
+        pj."id" "projectId",
+        pj."name" "projectName",
+        pj."description" "projectDescription",
+        pj."estimatedTime" "projectEstimatedTime",
+        pj."repository" "projectRepository",
+        pj."startDate" "projectStartDate",
+        pj."endDate" "projectEndDate",
+        pj."developerId" "projectDeveloperId"
+    FROM
+        developers dev
+    LEFT JOIN
+        developer_infos dev_i ON dev_i."developerId" = dev.id
+    LEFT JOIN
+        projects pj ON pj."developerId" = dev."id"
+    WHERE 
+        dev.id = $1;`;
   const queryConfig: QueryConfig = {
     text: queryString,
     values: [id],
