@@ -38,7 +38,7 @@ export const ensureEmailExists = async (
   const queryResult: QueryResult<IDeveloper> = await client.query(queryConfig);
   if (queryResult.rows.length > 0) {
     return response.status(409).json({
-      message: "Email already exists",
+      message: "Email already exists.",
     });
   }
 
@@ -252,7 +252,7 @@ export const ensureNameTecExists = async (
 
   if (queryResultFoundTechnoName.rows.length !== 0) {
     return response.status(409).json({
-      message: "The technology already exists",
+      message: "The technology already exists.",
     });
   }
 
@@ -299,7 +299,7 @@ export const ensureTecInProject = async (
 
   if (queryResultProjectTec.rows.length == 0) {
     return response.status(400).json({
-      message: "Technology not found in project",
+      message: "Technology not found in project.",
     });
   }
 

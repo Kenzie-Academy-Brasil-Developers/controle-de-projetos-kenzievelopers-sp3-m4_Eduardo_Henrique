@@ -42,7 +42,7 @@ app.delete("/developers/:id", ensureUserExists, deleteUserDev);
 
 app.post("/projects", ensureDeveloperIdProject, createProject);
 app.get("/projects/:id", ensureProjectExists, readProject);
-app.patch("/projects/:id", ensureDeveloperIdProject, ensureProjectExists, updateProject);
+app.patch("/projects/:id", ensureProjectExists, ensureDeveloperIdProject, updateProject);
 app.delete("/projects/:id", ensureProjectExists, deleteProject);
 app.post("/projects/:id/technologies", ensureProjectExists, ensureNameTecExists, addTechnologyToProject);
 app.delete("/projects/:id/technologies/:name", ensureProjectExists, ensureNameTecExistsParams, ensureTecInProject,deleteTechnologiesProject);
