@@ -219,7 +219,7 @@ export const ensureNameTecExists = async (
     await client.query(queryStringTechnoProject, [idProject]);
 
   if (queryResult.rowCount === 0) {
-    return response.status(404).json({
+    return response.status(400).json({
       message: "Technology not supported.",
       options: [
         "JavaScript",
@@ -251,7 +251,7 @@ export const ensureNameTecExists = async (
   );
 
   if (queryResultFoundTechnoName.rows.length !== 0) {
-    return response.status(404).json({
+    return response.status(409).json({
       message: "The technology already exists",
     });
   }
@@ -327,7 +327,7 @@ export const ensureNameTecExistsParams = async (
   };
   const queryResult: QueryResult<ITechnology> = await client.query(queryConfig);
   if (queryResult.rowCount === 0) {
-    return response.status(404).json({
+    return response.status(400).json({
       message: "Technology not supported.",
       options: [
         "JavaScript",

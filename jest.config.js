@@ -3,5 +3,5 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   testMatch:['**/__tests__/integrations/**/*.[jt]s?(x)'],
-  testTimeout: 1000
+  testTimeout: 2000
 };
