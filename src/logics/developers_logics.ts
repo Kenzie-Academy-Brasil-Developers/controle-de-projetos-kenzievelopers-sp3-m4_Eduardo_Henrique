@@ -92,7 +92,7 @@ export const readUserDev = async (
   const queryResult: QueryResult<IDeveloperAllInfos> = await client.query(
     queryConfig
   );
-  return response.status(200).json(queryResult.rows);
+  return response.status(200).json(queryResult.rows[0]);
 };
 
 export const updateUserDev = async (
@@ -106,7 +106,7 @@ export const updateUserDev = async (
       UPDATE
           developers
       SET
-          (%I) = (%L)
+          (%I) = ROW(%L)
       WHERE
           id = $1
       RETURNING *;
@@ -122,7 +122,7 @@ export const updateUserDev = async (
 
   const queryResult: QueryResult<IDeveloper> = await client.query(queryConfig);
 
-  return response.status(201).json(queryResult.rows[0]);
+  return response.status(200).json(queryResult.rows[0]);
 };
 
 export const deleteUserDev = async (

@@ -31,9 +31,7 @@ export const createProject = async (
   );
 
   const queryResult: QueryResult<IProjects> = await client.query(queryString);
-  if (queryResult.rows[0].endDate == undefined) {
-    delete queryResult.rows[0].endDate;
-  }
+
   return response.status(201).json(queryResult.rows[0]);
 };
 
